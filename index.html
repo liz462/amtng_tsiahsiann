@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>啊，下暗欲煮啥？</title>
+    <style>
+        body {
+            font-family: 'Microsoft JhengHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffeaa7, #fab1a0, #fd79a8);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 1000px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #d63031;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #2d3436;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+        
+        .input-section {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .input-group {
+            flex: 1;
+            min-width: 140px;
+            max-width: 160px;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 8px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .input-group textarea {
+            width: 100%;
+            height: 80px;
+            padding: 8px;
+            border: 2px solid #fab1a0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 15px;
+            resize: none;
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #e17055;
+            box-shadow: 0 0 10px rgba(225, 112, 85, 0.3);
+        }
+        
+        .button-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .decision-btn {
+            background: linear-gradient(45deg, #e17055, #d63031);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(214, 48, 49, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .decision-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(214, 48, 49, 0.4);
+        }
+        
+        .decision-btn:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            border: 3px solid #fab1a0;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3436;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .result.show {
+            animation: fadeInUp 0.6s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .input-section {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .input-group {
+                min-width: 200px;
+                max-width: 200px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>啊，下暗欲煮啥？</h1>
+        
+        <div class="subtitle">你手頭有啥食材？攏共寫佇框仔內底，一逝一項。</div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="sauce">醬料/口味</label>
+                <textarea id="sauce"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="protein">卵白質類</label>
+                <textarea id="protein"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="starch">粉漿類</label>
+                <textarea id="starch"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="vegetable">菜蔬類</label>
+                <textarea id="vegetable"></textarea>
+            </div>
+            
+            <div class="input-group">
+                <label for="side">配菜</label>
+                <textarea id="side"></textarea>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button class="decision-btn" onclick="makeDecision()">予你決定</button>
+        </div>
+        
+        <div class="result" id="result">
+        </div>
+    </div>
+
+    <script>
+        function makeDecision() {
+            const sauce = getRandomItem('sauce');
+            const protein = getRandomItem('protein');
+            const starch = getRandomItem('starch');
+            const vegetable = getRandomItem('vegetable');
+            const side = getRandomItem('side');
+            
+            const resultElement = document.getElementById('result');
+            resultElement.classList.remove('show');
+            
+            setTimeout(() => {
+                const result = `好啦，煮${sauce}${protein}${starch}配${vegetable}、${side}好無？`;
+                resultElement.textContent = result;
+                resultElement.classList.add('show');
+            }, 100);
+        }
+        
+        function getRandomItem(inputId) {
+            const textarea = document.getElementById(inputId);
+            const items = textarea.value.split('\n')
+                .map(item => item.trim())
+                .filter(item => item !== '')
+                .slice(0, 10); // 限制最多10個
+            
+            if (items.length === 0) {
+                return '';
+            }
+            
+            const randomIndex = Math.floor(Math.random() * items.length);
+            return items[randomIndex];
+        }
+        
+        // 限制每個輸入框最多10行
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                const lines = this.value.split('\n');
+                if (lines.length > 10) {
+                    this.value = lines.slice(0, 10).join('\n');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
